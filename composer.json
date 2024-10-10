@@ -36,6 +36,8 @@
     "topthink/think-validate": ">=2.0",
     "topthink/think-helper": ">=3.1",
     "ledc/container": ">=8.1",
+    "ledc/pipeline": ">=8.0",
+    "ledc/curl": ">=8.1",
     "ledc/locker": ">=1.1",
     "ledc/macroable": ">=8.0",
     "ledc/redis-queue": ">=8.1",
