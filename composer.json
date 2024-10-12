@@ -50,6 +50,7 @@
     "ext-posix": "*",
     "ext-pdo": "*",
     "ext-openssl": "*",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "ext-bcmath": "*"
   }
 }
