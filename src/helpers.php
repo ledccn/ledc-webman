@@ -10,6 +10,28 @@ use think\exception\ValidateException;
 use think\Validate;
 
 /**
+ * 判断是否通过微信客户端访问
+ * @return bool
+ */
+function is_wechat(): bool
+{
+    return str_contains(request()->header('user-agent', ''), 'MicroMessenger');
+}
+
+/**
+ * 判断是否通过移动端访问
+ * @return bool
+ */
+function is_mobile(): bool
+{
+    $userAgent = request()?->header('user-agent', '');
+    if (preg_match('/(iphone|ipod|ipad|android|blackberry|webos|windows phone|mobile)/i', $userAgent ?: '')) {
+        return true;
+    }
+    return false;
+}
+
+/**
  * 雪花ID生成器
  * @return Snowflake
  * @throws RedisException
