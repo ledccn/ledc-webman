@@ -36,7 +36,7 @@ function is_mobile(): bool
  * - 规则：年月日时分秒 + 6位微秒数（示例值20241101235959123456）
  * @return string
  */
-function generateOrderNumber(): string
+function generate_order_number(): string
 {
     [$mSec, $second] = explode(' ', microtime());
     return date('YmdHis', (int)$second) . substr($mSec, 2, 6);
