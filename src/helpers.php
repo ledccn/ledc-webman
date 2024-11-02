@@ -32,6 +32,17 @@ function is_mobile(): bool
 }
 
 /**
+ * 生成20位纯数字订单号
+ * - 规则：年月日时分秒 + 6位微秒数（示例值20241101235959123456）
+ * @return string
+ */
+function generateOrderNumber(): string
+{
+    [$mSec, $second] = explode(' ', microtime());
+    return date('YmdHis', (int)$second) . substr($mSec, 2, 6);
+}
+
+/**
  * 雪花ID生成器
  * @return Snowflake
  * @throws RedisException
