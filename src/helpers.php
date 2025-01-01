@@ -43,6 +43,18 @@ function generate_order_number(): string
 }
 
 /**
+ * 生成19位纯数字订单号
+ * - 规则：年月日 + 5位当日秒数 + 6位微秒数（示例值2025010166074675841）
+ * @return string
+ */
+function generate_order_sn(): string
+{
+    [$mSec, $timestamp] = explode(' ', microtime());
+    $s = $timestamp - mktime(0, 0, 0);
+    return date('Ymd', (int)$timestamp) . str_pad($s, 5, '0', STR_PAD_LEFT) . substr($mSec, 2, 6);
+}
+
+/**
  * 雪花ID生成器
  * @return Snowflake
  * @throws RedisException
