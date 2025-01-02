@@ -44,6 +44,7 @@
     "ledc/crypt": ">=8.1",
     "ledc/webman-user": ">=8.0",
     "ledc/snowflake": ">=1.0",
+    "ledc/phinx": ">=8.0",
     "webman/rate-limiter": ">=1.1",
     "webman/admin": ">=0.6.28",
     "ext-json": "*",
