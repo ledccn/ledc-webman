@@ -3,7 +3,7 @@
 namespace Ledc\Webman\Patch;
 
 /**
- * 修复"topthink/think-validate": ">=2.0", 在高版本中报错
+ * 修复"topthink/think-validate": ">=2.0", 在高版本中报错：filter_var(): Argument #3 ($options) must be of type array|int, null given
  */
 trait FixValidate
 {
@@ -26,7 +26,7 @@ trait FixValidate
         }
 
         if (is_null($param)) {
-            // fix：在高版本中报错 david 2025年1月21日 14:19:08
+            // fix：在高版本中报错【filter_var(): Argument #3 ($options) must be of type array|int, null given】 david 2025年1月21日 14:19:08
             return false !== filter_var($value, is_int($rule) ? $rule : filter_id($rule));
         }
         return false !== filter_var($value, is_int($rule) ? $rule : filter_id($rule), $param);
