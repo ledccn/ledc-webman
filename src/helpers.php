@@ -10,12 +10,25 @@ use think\exception\ValidateException;
 use think\Validate;
 
 /**
+ * 获取当前请求的User-Agent
+ * @return string|null
+ */
+function get_user_agent(): ?string
+{
+    return request()?->header('user-agent', '');
+}
+
+/**
  * 判断是否通过微信客户端访问
  * @return bool
  */
 function is_wechat(): bool
 {
-    return str_contains(request()->header('user-agent', ''), 'MicroMessenger');
+    $userAgent = get_user_agent();
+    if (empty($userAgent)) {
+        return false;
+    }
+    return str_contains($userAgent, 'MicroMessenger');
 }
 
 /**
@@ -24,9 +37,15 @@ function is_wechat(): bool
  */
 function is_mobile(): bool
 {
-    $userAgent = request()?->header('user-agent', '');
-    if (preg_match('/(iphone|ipod|ipad|android|blackberry|webos|windows phone|mobile)/i', $userAgent ?: '')) {
-        return true;
+    $userAgent = get_user_agent();
+    if (empty($userAgent)) {
+        return false;
+    }
+    $mobileAgents = ["Android", "iPhone", "iPod", "iPad", "Windows Phone", "BlackBerry", "SymbianOS", "OpenHarmony", "Mobile"];
+    foreach ($mobileAgents as $needle) {
+        if (str_contains($userAgent, $needle)) {
+            return true;
+        }
     }
     return false;
 }
