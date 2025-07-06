@@ -40,7 +40,7 @@
     "topthink/think-container": ">=3.0",
     "topthink/think-validate": ">=3.0",
     "topthink/think-helper": ">=3.1",
-    "ledc/container": ">=8.1",
+    "ledc/container": ">=8.2",
     "ledc/pipeline": ">=8.0",
     "ledc/curl": ">=8.1",
     "ledc/locker": ">=1.1",
