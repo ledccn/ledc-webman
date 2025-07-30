@@ -3,7 +3,12 @@
 namespace Ledc\Webman;
 
 use support\exception\BusinessException;
+use support\exception\NotFoundException;
+use think\exception\ClassNotFoundException;
+use think\exception\FuncNotFoundException;
+use think\exception\ValidateException;
 use Throwable;
+use Webman\Exception\FileException;
 use Webman\Http\Request;
 use Webman\Http\Response;
 
@@ -25,7 +30,18 @@ class ExceptionHandler extends \Webman\Exception\ExceptionHandler
      * @var array
      */
     public const array whiteListException = [
+        // 异常：业务
         BusinessException::class,
+        // 异常：类或函数不存在
+        NotFoundException::class,
+        // 异常：类不存在
+        ClassNotFoundException::class,
+        // 异常：函数不存在
+        FuncNotFoundException::class,
+        // 异常：验证器
+        ValidateException::class,
+        // 异常：文件
+        FileException::class,
     ];
 
     /**
