@@ -120,7 +120,7 @@ trait HasAttributes
      * @param mixed|null $default
      * @return mixed
      */
-    final public function get(int|string $key = null, mixed $default = null): mixed
+    final public function get(int|string|null $key = null, mixed $default = null): mixed
     {
         if (null === $key) {
             return $this->attributes;

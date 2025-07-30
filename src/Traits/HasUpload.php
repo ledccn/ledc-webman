@@ -138,11 +138,11 @@ trait HasUpload
         $file_size = $file->getSize();
 
         if (!$ext && $file_name === 'blob') {
-            [$___image, $ext] = explode('/', $mime_type);
+            [$___image, $ext] = explode('/', (string)$mime_type);
             unset($___image);
         }
 
-        $ext = strtolower($ext);
+        $ext = strtolower((string)$ext);
         $ext_forbidden_map = ['php', 'php3', 'php5', 'css', 'js', 'html', 'htm', 'asp', 'jsp'];
         if (in_array($ext, $ext_forbidden_map)) {
             throw new BusinessException('不支持该格式的文件上传', 400);

@@ -33,7 +33,7 @@ class Number
      * 比较两个任意精度的数字
      * - 两个数相等时返回 0； num1 比 num2 大时返回 1； 其他则返回 -1.
      */
-    public static function bccomp(string $num1, string $num2, int $scale = null): int
+    public static function bccomp(string $num1, string $num2, ?int $scale = null): int
     {
         return bccomp($num1, $num2, $scale ?? self::autoScale($num1, $num2));
     }
@@ -63,7 +63,7 @@ class Number
      *
      * @param null|int $scale 小数点后的小数位数
      */
-    public static function bcadd(string $num1, string $num2, int $scale = null): string
+    public static function bcadd(string $num1, string $num2, ?int $scale = null): string
     {
         return bcadd($num1, $num2, $scale ?? self::autoScale($num1, $num2));
     }
@@ -71,7 +71,7 @@ class Number
     /**
      * 两个任意精度数字的减法.
      */
-    public static function bcsub(string $num1, string $num2, int $scale = null): string
+    public static function bcsub(string $num1, string $num2, ?int $scale = null): string
     {
         return bcsub($num1, $num2, $scale ?? self::autoScale($num1, $num2));
     }
@@ -79,7 +79,7 @@ class Number
     /**
      * 两个任意精度数字乘法计算.
      */
-    public static function bcmul(string $num1, string $num2, int $scale = null): string
+    public static function bcmul(string $num1, string $num2, ?int $scale = null): string
     {
         return bcmul($num1, $num2, $scale ?? self::autoScale($num1, $num2));
     }
@@ -89,7 +89,7 @@ class Number
      *
      * @return null|string 如果 num2 是 0 结果为 null
      */
-    public static function bcdiv(string $num1, string $num2, int $scale = null): ?string
+    public static function bcdiv(string $num1, string $num2, ?int $scale = null): ?string
     {
         return bcdiv($num1, $num2, $scale ?? self::autoScale($num1, $num2));
     }
@@ -100,7 +100,7 @@ class Number
      * @param string $num 底数
      * @param string $exponent 指数
      */
-    public static function bcpow(string $num, string $exponent, int $scale = null): string
+    public static function bcpow(string $num, string $exponent, ?int $scale = null): string
     {
         return bcpow($num, $exponent, $scale ?? self::autoScale($num, $exponent));
     }
@@ -110,7 +110,7 @@ class Number
      * - 设置所有 bc math 函数在未设定情况下的小数点保留位数
      * - 获取当前的小数点保留位数.
      */
-    public static function bcscale(int $scale = null): int
+    public static function bcscale(?int $scale = null): int
     {
         return bcscale($scale);
     }

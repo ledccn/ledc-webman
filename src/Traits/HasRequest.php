@@ -115,8 +115,8 @@ trait HasRequest
             }
 
             //解析name
-            if (strpos($name, '/')) {
-                [$name, $type] = explode('/', $name);
+            if (strpos((string)$name, '/')) {
+                [$name, $type] = explode('/', (string)$name);
             }
 
             $data = $source[$name] ?? $default;
