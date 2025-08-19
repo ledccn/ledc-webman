@@ -53,7 +53,7 @@ abstract class CacheManager
     }
 
     /**
-     * 【仅支持Redis驱动】批量获取缓存值，如果缓存不存在，则执行闭包函数获取值并保存
+     * 批量获取缓存值，如果缓存不存在，则执行闭包函数获取值并保存
      * @param array $keys 缓存键列表
      * @param Closure $closure 回调函数
      * @param int|DateInterval|null $ttl 过期时间
