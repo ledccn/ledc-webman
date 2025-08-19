@@ -2,18 +2,30 @@
 
 namespace Ledc\Webman;
 
+use BadFunctionCallException;
+use BadMethodCallException;
+use DomainException;
+use InvalidArgumentException;
+use LengthException;
+use LogicException;
+use OutOfRangeException;
+use OverflowException;
+use RangeException;
+use RuntimeException;
 use support\exception\BusinessException;
 use support\exception\NotFoundException;
 use think\exception\ClassNotFoundException;
 use think\exception\FuncNotFoundException;
 use think\exception\ValidateException;
 use Throwable;
+use UnderflowException;
+use UnexpectedValueException;
 use Webman\Exception\FileException;
 use Webman\Http\Request;
 use Webman\Http\Response;
 
 /**
- * 异常信息以Json返回
+ * 异常处理类
  */
 class ExceptionHandler extends \Webman\Exception\ExceptionHandler
 {
@@ -42,6 +54,30 @@ class ExceptionHandler extends \Webman\Exception\ExceptionHandler
         ValidateException::class,
         // 异常：文件
         FileException::class,
+        // 异常：无效参数
+        InvalidArgumentException::class,
+        // 异常：方法不存在
+        BadMethodCallException::class,
+        // 异常：函数不存在
+        BadFunctionCallException::class,
+        // 异常：数据域异常
+        DomainException::class,
+        // 异常：长度超出
+        LengthException::class,
+        // 异常：键或索引不存在
+        OutOfRangeException::class,
+        // 异常：数据溢出
+        OverflowException::class,
+        // 异常：数据范围
+        RangeException::class,
+        // 异常：容器下溢出
+        UnderflowException::class,
+        // 异常：数据类型或值不匹配
+        UnexpectedValueException::class,
+        // 异常：逻辑错误【放最后】
+        LogicException::class,
+        // 异常：运行时【放最后】
+        RuntimeException::class,
     ];
 
     /**
