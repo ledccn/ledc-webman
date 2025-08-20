@@ -11,69 +11,13 @@ use support\Redis;
  */
 trait HasHash
 {
+    use CacheMissed, HasSerialization;
+
     /**
      * 【获取】完整的哈希表键名
      * @return string
      */
     abstract public static function getKey(): string;
-
-    /**
-     * 判断是否启用missed缓存
-     * @return bool
-     */
-    protected static function isEnableMissedCache(): bool
-    {
-        return true;
-    }
-
-    /**
-     * 获取missed缓存的TTL
-     * @return int
-     */
-    protected static function getMissedCacheTTL(): int
-    {
-        return 600;
-    }
-
-    /**
-     * 【获取】成员missed缓存key
-     * @param string $member
-     * @return string
-     */
-    public static function getMissedCacheKey(string $member): string
-    {
-        return static::getKey() . ':MissedMember:' . $member;
-    }
-
-    /**
-     * 设置成员missed缓存
-     * @param string $member
-     * @return bool
-     */
-    public static function setMissedCache(string $member): bool
-    {
-        return static::connection()->setex(static::getMissedCacheKey($member), static::getMissedCacheTTL(), 1);
-    }
-
-    /**
-     * 判断成员missed缓存
-     * @param string $member
-     * @return bool
-     */
-    public static function hasMissedCache(string $member): bool
-    {
-        return (bool)static::connection()->exists(static::getMissedCacheKey($member));
-    }
-
-    /**
-     * 删除成员missed缓存
-     * @param string $member
-     * @return false|int
-     */
-    public static function delMissedCache(string $member): false|int
-    {
-        return static::connection()->del(static::getMissedCacheKey($member));
-    }
 
     /**
      * 批量获取哈希表成员
@@ -93,18 +37,18 @@ trait HasHash
         $result = [];
         foreach ($maps as $member => $value) {
             if (false === $value) {
-                if (static::isEnableMissedCache() && static::hasMissedCache($member)) {
+                if (static::isEnableMissed() && static::hasMissed($member)) {
                     continue;
                 }
-                if ($fn && $value = call_user_func($fn, $member)) {
-                    static::hSet($member, $value);
+                if ($fn && null !== ($value = call_user_func($fn, $member))) {
+                    static::hSet($member, static::serialize($value));
                     $result[$member] = $value;
                 } else {
-                    static::isEnableMissedCache() && static::setMissedCache($member);
+                    static::isEnableMissed() && static::setMissed($member);
                     $missedMembers[] = $member;
                 }
             } else {
-                $result[$member] = $value;
+                $result[$member] = static::unserialize($value);
             }
         }
         return $result;
@@ -127,19 +71,19 @@ trait HasHash
             goto refresh;
         }
         if (!$value && $fn) {
-            if (static::isEnableMissedCache() && static::hasMissedCache($member)) {
+            if (static::isEnableMissed() && static::hasMissed($member)) {
                 return null;
             }
             refresh:
-            if ($value = call_user_func($fn, $member)) {
-                static::hSet($member, $value);
+            if (null !== ($value = call_user_func($fn, $member))) {
+                static::hSet($member, static::serialize($value));
                 return $value;
             } else {
-                static::isEnableMissedCache() && static::setMissedCache($member);
+                static::isEnableMissed() && static::setMissed($member);
                 return null;
             }
         }
-        return $value ?: null;
+        return $value ? static::unserialize($value) : null;
     }
 
     /**
@@ -160,7 +104,7 @@ trait HasHash
      */
     public static function hSet(string $member, string|int|float $value): false|int
     {
-        static::isEnableMissedCache() && static::delMissedCache($member);
+        static::isEnableMissed() && static::delMissed($member);
         return static::connection()->hSet(static::getKey(), $member, $value);
     }
 
@@ -185,7 +129,7 @@ trait HasHash
      */
     public static function setJsonEncode(string $member, array|string|int|float|bool $value): false|int
     {
-        static::isEnableMissedCache() && static::delMissedCache($member);
+        static::isEnableMissed() && static::delMissed($member);
         return static::connection()->hSet(static::getKey(), $member, json_encode($value, JSON_UNESCAPED_UNICODE));
     }
 

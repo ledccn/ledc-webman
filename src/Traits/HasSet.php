@@ -34,9 +34,9 @@ trait HasSet
      * @param string $key
      * @param Closure|null $fn 获取值回调
      * @param Closure|null $refresh 是否刷新回调，回调内返回布尔值，true刷新缓存，false不刷新缓存
-     * @return false|array|null
+     * @return array|null
      */
-    public static function sMembersOrAdd(string $key, ?Closure $fn = null, ?Closure $refresh = null): false|array|null
+    public static function sMembersOrAdd(string $key, ?Closure $fn = null, ?Closure $refresh = null): ?array
     {
         $members = static::connection()->sMembers(static::getSetKey($key));
         if ($members && $fn && $refresh && call_user_func($refresh, $key)) {
