@@ -70,7 +70,7 @@ trait HasHash
             // 需同时满足刷新条件：1.字段存在 2.存在回调 3.回调返回true
             goto refresh;
         }
-        if (!$value && $fn) {
+        if ((false === $value || null === $value) && $fn) {
             if (static::isEnableMissed() && static::hasMissed($member)) {
                 return null;
             }
