@@ -81,6 +81,11 @@ class ExceptionHandler extends \Webman\Exception\ExceptionHandler
     ];
 
     /**
+     * 错误信息
+     */
+    private const string ERROR_MESSAGE = 'Server internal error';
+
+    /**
      * 渲染返回
      * @param Request $request
      * @param Throwable $exception
@@ -92,24 +97,30 @@ class ExceptionHandler extends \Webman\Exception\ExceptionHandler
             return $response;
         }
 
-        $header = [
-            'Content-Type' => 'application/json; charset=utf-8',
-            'Cache-Control' => 'no-cache', //禁止缓存
-            'Pragma' => 'no-cache', //禁止缓存
-        ];
+        $msg = match (true) {
+            $this->debug, $this->canWhiteList($exception) => $exception->getMessage(),
+            default => self::ERROR_MESSAGE,
+        };
+        if ($request->expectsJson()) {
+            $header = [
+                'Content-Type' => 'application/json; charset=utf-8',
+                'Cache-Control' => 'no-cache', //禁止缓存
+                'Pragma' => 'no-cache', //禁止缓存
+            ];
 
-        $rs = [
-            'code' => $exception->getCode() ?: 500,
-            'msg' => match (true) {
-                $this->debug, $this->canWhiteList($exception) => $exception->getMessage(),
-                default => 'server internal error',
-            },
-        ];
-        if ($this->debug) {
-            $rs['traces'] = (string)$exception;
+            $json = [
+                'code' => $exception->getCode() ?: 500,
+                'msg' => $msg,
+            ];
+            if ($this->debug) {
+                $json['traces'] = (string)$exception;
+            }
+
+            return new Response(200, $header, json_encode($json, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
 
-        return new Response(200, $header, json_encode($rs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $error = $this->debug ? nl2br((string)$exception) : $msg;
+        return new Response(500, [], $error);
     }
 
     /**
