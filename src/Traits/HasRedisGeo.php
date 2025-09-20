@@ -9,7 +9,6 @@ use support\Redis;
 
 /**
  * Redis GEO地理位置
- * @method int|array geoRadius($longitude, $latitude, $radius, $unit, $options = []) 根据用户给定的经纬度坐标来获取指定范围内的地理位置集合
  * @method array geoRadiusByMember($member, $radius, $units, $options = []) 根据储存在位置集合里面的某个地点获取指定范围内的地理位置集合
  */
 trait HasRedisGeo
@@ -17,19 +16,19 @@ trait HasRedisGeo
     /**
      * 距离单位：米
      */
-    final public const UNIT_M = 'm';
+    final public const string UNIT_M = 'm';
     /**
      * 距离单位：千米
      */
-    final public const UNIT_KM = 'km';
+    final public const string UNIT_KM = 'km';
     /**
      * 距离单位：英里
      */
-    final public const UNIT_MI = 'mi';
+    final public const string UNIT_MI = 'mi';
     /**
      * 距离单位：英尺
      */
-    final public const UNIT_FT = 'ft';
+    final public const string UNIT_FT = 'ft';
 
     /**
      * GEO地理位置key
@@ -76,6 +75,21 @@ trait HasRedisGeo
     public function geoAdd(string $longitude, string $latitude, string $member): int|false
     {
         return $this->connection()->geoAdd($this->getGeoKey(), $longitude, $latitude, $member);
+    }
+
+    /**
+     * 查询地理位置范围内符合条件的成员
+     * - 该方法用于检索某个地理位置坐标范围内指定半径内的所有成员，并支持多种选项来控制返回结果的格式和内容。
+     * @param float $lng 查询中心点的经度
+     * @param float $lat 查询中心点的纬度
+     * @param float $radius 搜索半径
+     * @param string $unit 距离单位（如 'm'、'km'、'mi'、'ft'）
+     * @param array $options 可选参数数组，控制返回结果格式
+     * @return mixed
+     */
+    public function geoRadius(float $lng, float $lat, float $radius, string $unit = self::UNIT_M, array $options = []): mixed
+    {
+        return static::connection()->georadius($this->getGeoKey(), $lng, $lat, $radius, $unit, $options);
     }
 
     /**
