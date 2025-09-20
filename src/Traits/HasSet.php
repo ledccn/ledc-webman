@@ -120,7 +120,7 @@ trait HasSet
      * @param array $values
      * @return int
      */
-    public function sAddArray(string $key, array $values): int
+    public static function sAddArray(string $key, array $values): int
     {
         return static::connection()->sAddArray(static::getSetKey($key), $values);
     }
@@ -155,7 +155,7 @@ trait HasSet
      * @param string ...$other_members 任意数量的附加值进行检查
      * @return false|array 返回一个整数数组，表示每个传入的值是否是集合的成员
      */
-    public function sMisMember(string $key, string $member, string ...$other_members): false|array
+    public static function sMisMember(string $key, string $member, string ...$other_members): false|array
     {
         return static::connection()->sMisMember(static::getSetKey($key), $member, ...$other_members);
     }
@@ -178,7 +178,7 @@ trait HasSet
      * @param mixed $value 源集合的待移动成员
      * @return bool
      */
-    public function sMove(string $src, string $dst, mixed $value): bool
+    public static function sMove(string $src, string $dst, mixed $value): bool
     {
         return static::connection()->sMove(static::getSetKey($src), static::getSetKey($dst), $value);
     }
