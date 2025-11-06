@@ -17,6 +17,26 @@ PHP版本：>=8.3
 
 ## nginx配置
 
+### 最佳实践，静态文件优先
+
+```conf
+location ^~ / {
+  try_files $uri $uri/ @webman;
+}
+location @webman
+{
+  proxy_http_version 1.1;
+  proxy_read_timeout 120s;
+  proxy_set_header Connection "";
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_set_header REMOTE-HOST $remote_addr;
+  proxy_pass http://127.0.0.1:2025;
+}
+```
+
 ### 方案1，静态文件优先
 
 ```conf
