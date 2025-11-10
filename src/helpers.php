@@ -152,3 +152,42 @@ function current_git_filemtime(string $branch = 'master', string $format = 'Y-m-
 
     return '';
 }
+
+/**
+ * xlswriter导出文件
+ * @param string $path xlsx文件保存路径
+ * @param string $filename 文件名
+ * @param array $header 表头
+ * @param array $data 表数据（二维数组）
+ * @return string
+ */
+function xls_writer(string $path, string $filename, array $header, array $data): string
+{
+    $config = [
+        'path' => $path,     // xlsx文件保存路径
+    ];
+    $excel = new \Vtiful\Kernel\Excel($config);
+
+    // fileName 会自动创建一个工作表，你可以自定义该工作表名称，工作表名称为可选参数
+    $filePath = $excel->fileName($filename . '.xlsx', 'sheet1')
+        ->header($header)
+        ->data($data)
+        ->output();
+    // 关闭当前打开的所有文件句柄 并 回收资源
+    if (method_exists($excel, 'close')) {
+        $excel->close();
+    }
+
+    return $filePath;
+}
+
+/**
+ * 获取xlswriter句柄
+ * @param string $path xlsx文件保存路径
+ * @return \Vtiful\Kernel\Excel
+ */
+function xls_writer_handle(string $path): \Vtiful\Kernel\Excel
+{
+    $config = ['path' => $path];
+    return new \Vtiful\Kernel\Excel($config);
+}
