@@ -17,6 +17,26 @@ PHP版本：>=8.3
 
 ## nginx配置
 
+### 最佳实践，静态文件优先
+
+```conf
+location ^~ / {
+  try_files $uri $uri/ @webman;
+}
+location @webman
+{
+  proxy_http_version 1.1;
+  proxy_read_timeout 120s;
+  proxy_set_header Connection "";
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header REMOTE-HOST $remote_addr;
+  proxy_pass http://127.0.0.1:8787;
+}
+```
+
 ### 方案1，静态文件优先
 
 ```conf
@@ -26,6 +46,7 @@ location ^~ / {
   proxy_set_header Host $host;
   proxy_set_header X-Real-IP $remote_addr;
   proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   # 代理条件:文件不存在&目录内不存在index.html
   set $should_proxy 1;
   if (-f $request_filename) {
@@ -44,6 +65,8 @@ location ^~ / {
 
 ### 方案2，静态文件优先
 
+webman官方推荐的方案
+
 ```conf
 location ^~ / {
   proxy_http_version 1.1;
@@ -51,6 +74,7 @@ location ^~ / {
   proxy_set_header Host $host;
   proxy_set_header X-Real-IP $remote_addr;
   proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   if (!-f $request_filename){
     proxy_pass http://127.0.0.1:8787;
   }
@@ -58,6 +82,8 @@ location ^~ / {
 ```
 
 ### 方案3，静态文件优先
+
+适合静态打包/pages路径的项目
 
 ```conf
 location ^~ / {
@@ -69,8 +95,8 @@ location ^~ / {
   proxy_set_header Connection "";
   proxy_set_header Host $host;
   proxy_set_header X-Real-IP $remote_addr;
-  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   if (!-f $request_filename){
     proxy_pass http://127.0.0.1:8787;
   }
@@ -83,8 +109,8 @@ location ^~ / {
 location = /websocket
 {
   proxy_pass http://127.0.0.1:8788;
-  proxy_http_version 1.1;
   proxy_read_timeout 300s;
+  proxy_http_version 1.1;
   proxy_set_header Host $host;
   proxy_set_header Upgrade $http_upgrade;
   proxy_set_header Connection "Upgrade";
